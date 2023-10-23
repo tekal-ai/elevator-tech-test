@@ -1,6 +1,10 @@
 # Memorable Technical Test: build an elevator system
 
-In this exercise, you are going to design an elevator system for a skyscraper with 100 floors. The goal is to minimize the amount of time spent between calling an elevator and arriving at the destination floor. If any portion of this project’s requirements is relaxed, please include in your solution which requirements they are with a brief description for why they couldn’t be included. 
+In this exercise, you are going to design an elevator system for a skyscraper with 100 floors. The goal is to minimize the amount of time spent between calling an elevator and arriving at the destination floor. 
+
+You will have a 48h window to complete the challenge, but we ask you to not spend more than 4hs working on it. 
+
+If any portion of this project’s requirements is relaxed, please include in your solution which requirements they are with a brief description for why they couldn’t be included. 
 
 ## Part A: 
 
@@ -12,6 +16,7 @@ In a programming language of your choice, implement one or more functions that t
  * It takes 1 second for the elevator to move 1 floor. 
  * It takes 5 seconds to open the elevator door to pick up / drop-off a passenger. This time is 30 seconds for the lobby floor. 
  * A maximum of 10 people can fit into the elevator car at any one time. 
+ * Multiple people can enter the elevator during a pick up, and each person can have a different destination floor.
  
 
 ## Part B: 
@@ -25,6 +30,7 @@ After the simulator runs, it should produce summary statistics that describe:
  * The average time spent waiting for an elevator 
  * The average time spent inside an elevator 
  * The average total time spent 
+ * The maximum and minimum time any passenger had to wait
  
 
 ## How to deliver your solution:
@@ -41,9 +47,17 @@ After the simulator runs, it should produce summary statistics that describe:
 
 **Additionally**
 
-Engineers at Memorable have a collaborative culture, and we often discuss projects across teams. Consider yourself our colleague on this project, and please don’t hesitate to reach out to us for clarification on any requirements or guidance if you’re having trouble. In other words: please ask questions. 
+Engineers at Memorable have a collaborative culture, and we often discuss projects across teams. Consider yourself our colleague on this project, and please don’t hesitate to reach out to us for clarification on any requirements or guidance if you’re having trouble. In other words: feel free to ask questions. 
 
 We are looking for high quality work, so we would rather see something that is functionally incomplete but well-designed and tested than something that is of lower quality. Please expect that each decision may be questioned by any engineer in the review discussion and design accordingly. You should expect to actually demo your solution. 
+
+If there are additional features or changes that you wuld like to implement with more time, enumerate them in the README.
+
+
+
+
+
+
 
 
 

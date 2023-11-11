@@ -18,7 +18,7 @@ class ElevatorTest {
         elevator.move(5);
 
         assertEquals(5, elevator.getCurrentFloor());
-        assertTrue(elevator.getIsMoving());
+        assertTrue(elevator.isMoving());
     }
 
     @Test
@@ -27,7 +27,7 @@ class ElevatorTest {
 
         elevator.openDoors();
 
-        assertFalse(elevator.getIsMoving());
+        assertFalse(elevator.isMoving());
         assertEquals(1, elevator.getCurrentFloor());
         verify(elevator.getTimeProvider(), times(1)).sleep(30 * 1000L);
     }
@@ -38,7 +38,7 @@ class ElevatorTest {
 
         elevator.openDoors();
 
-        assertFalse(elevator.getIsMoving());
+        assertFalse(elevator.isMoving());
         assertEquals(1, elevator.getCurrentFloor());
     }
 
@@ -48,7 +48,7 @@ class ElevatorTest {
 
         elevator.closeDoors();
 
-        assertFalse(elevator.getIsMoving());
+        assertFalse(elevator.isMoving());
     }
 
     @Test
@@ -58,7 +58,7 @@ class ElevatorTest {
 
         elevator.addPassenger(person);
 
-        assertFalse(elevator.getIsMoving());
+        assertFalse(elevator.isMoving());
         assertEquals(1, elevator.getPassengers().size());
         assertEquals(person, elevator.getPassengers().iterator().next());
     }
@@ -71,6 +71,6 @@ class ElevatorTest {
 
         elevator.removePassenger(person);
 
-        assertFalse(elevator.getIsMoving());
+        assertFalse(elevator.isMoving());
     }
 }

@@ -12,7 +12,6 @@ public class ElevatorFactory {
         return Elevator.builder()
                 .elevatorId(UUID.randomUUID())
                 .currentFloor(1)
-                .destinationFloor(null)
                 .passengers(new HashSet<>())
                 .timeProvider(new RealTimeProvider())
                 .build();

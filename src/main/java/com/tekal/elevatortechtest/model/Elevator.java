@@ -16,18 +16,12 @@ import java.util.UUID;
 public class Elevator {
     private UUID elevatorId;
     private Integer currentFloor;
-    private Integer destinationFloor;
     private Set<Person> passengers;
     private Boolean isMoving;
     private final TimeProvider timeProvider;
 
-
-    private void simulateTimePassing(Integer seconds) {
-        try {
-            timeProvider.sleep(seconds * 1000L);
-        } catch (InterruptedException e) {
-            Thread.currentThread().interrupt();
-        }
+    public Boolean isMoving() {
+        return getIsMoving();
     }
 
     public void move(Integer targetFloor) {
@@ -59,5 +53,13 @@ public class Elevator {
     public void removePassenger(Person person) {
         simulateTimePassing(5);
         passengers.remove(person);
+    }
+    
+    private void simulateTimePassing(Integer seconds) {
+        try {
+            timeProvider.sleep(seconds * 1000L);
+        } catch (InterruptedException e) {
+            Thread.currentThread().interrupt();
+        }
     }
 }

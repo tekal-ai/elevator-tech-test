@@ -14,7 +14,6 @@ class ElevatorFactoryTest {
 
         assertNotNull(elevator.getElevatorId());
         assertEquals(1, elevator.getCurrentFloor());
-        assertNull(elevator.getDestinationFloor());
         assertNotNull(elevator.getPassengers());
         assertEquals(new HashSet<>(), elevator.getPassengers());
     }

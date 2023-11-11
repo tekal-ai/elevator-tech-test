@@ -13,7 +13,6 @@ public class ElevatorUtil {
         return Elevator.builder()
                 .elevatorId(UUID.randomUUID())
                 .currentFloor(1)
-                .destinationFloor(null)
                 .passengers(new HashSet<>())
                 .isMoving(false)
                 .timeProvider(mock(TimeProvider.class))

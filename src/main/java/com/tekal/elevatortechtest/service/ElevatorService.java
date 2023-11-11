@@ -4,7 +4,6 @@ import com.tekal.elevatortechtest.model.request.ElevatorCall;
 import org.springframework.scheduling.annotation.Async;
 
 public interface ElevatorService {
-    @Async("elevatorTaskExecutor")
+    @Async
     void processElevatorCall(ElevatorCall elevatorCall);
-
 }

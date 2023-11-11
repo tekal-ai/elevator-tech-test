@@ -1,24 +1,30 @@
 package com.tekal.elevatortechtest.model;
 
+import com.tekal.elevatortechtest.model.provider.TimeProvider;
 import lombok.AllArgsConstructor;
 import lombok.Builder;
+import lombok.Getter;
+import lombok.Setter;
 
-import java.util.HashSet;
 import java.util.Set;
 import java.util.UUID;
 
 @Builder
 @AllArgsConstructor
+@Getter
+@Setter
 public class Elevator {
     private UUID elevatorId;
     private Integer currentFloor;
     private Integer destinationFloor;
     private Set<Person> passengers;
     private Boolean isMoving;
+    private final TimeProvider timeProvider;
+
 
     private void simulateTimePassing(Integer seconds) {
         try {
-            Thread.sleep(seconds * 1000L);
+            timeProvider.sleep(seconds * 1000L);
         } catch (InterruptedException e) {
             Thread.currentThread().interrupt();
         }
@@ -32,8 +38,8 @@ public class Elevator {
     }
 
     public void openDoors() {
+        this.isMoving = Boolean.FALSE;
         if (currentFloor == 1) {
-            this.isMoving = Boolean.FALSE;
             simulateTimePassing(30);
         } else {
             simulateTimePassing(5);
@@ -45,10 +51,13 @@ public class Elevator {
     }
 
     public void addPassenger(Person person) {
+
         simulateTimePassing(5);
+        passengers.add(person);
     }
 
     public void removePassenger(Person person) {
         simulateTimePassing(5);
+        passengers.remove(person);
     }
 }

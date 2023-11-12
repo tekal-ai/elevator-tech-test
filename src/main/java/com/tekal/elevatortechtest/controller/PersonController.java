@@ -13,7 +13,7 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 
 @RestController
-@RequestMapping("/people")
+@RequestMapping("/v1/people")
 public class PersonController {
 
     private final ElevatorService elevatorService;

@@ -60,6 +60,8 @@ public class FCFSElevatorService extends ElevatorCallServer implements ElevatorS
     @Async
     protected void startElevatorServiceThread() {
         Observable.interval(100, TimeUnit.MILLISECONDS)
-                .subscribe(tick -> serveElevatorCalls());
+                .subscribe(tick -> serveElevatorCalls(),
+                        throwable -> log.error("Error in elevator service thread", throwable),
+                        () -> log.info("Elevator service thread stopped"));
     }
 }

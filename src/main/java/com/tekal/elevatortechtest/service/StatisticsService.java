@@ -1,73 +1,67 @@
 package com.tekal.elevatortechtest.service;
 
 import lombok.extern.slf4j.Slf4j;
-import org.apache.commons.lang3.mutable.MutableLong;
 import org.apache.commons.lang3.tuple.MutablePair;
-import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 @Service
 @Slf4j
 public class StatisticsService {
 
-    private List<Pair<UUID, MutableLong>> waitingTimes = new ArrayList<>();
-    private List<Pair<UUID, MutableLong>> travelTimes = new ArrayList<>();
+    private Map<UUID, MutablePair<Long, Long>> waitingTimes = new HashMap<>();
+    private Map<UUID, MutablePair<Long, Long>> travelTimes = new HashMap<>();
 
     public void recordWaitingTime(UUID personId, Long waitingTime) {
-        waitingTimes.add(Pair.of(personId, new MutableLong(waitingTime)));
+        waitingTimes.put(personId, MutablePair.of(waitingTime, 0L));
         log.info("Person " + personId + " starts waiting at " + waitingTime + "ms");
     }
 
     public void stopWaitingTime(UUID personId, Long waitingTime) {
-        waitingTimes.stream()
-                .filter(p -> p.getLeft().equals(personId))
-                .findFirst()
-                .ifPresent(p -> p.getRight().subtract(waitingTime));
+        waitingTimes.get(personId).setRight(waitingTime);
         log.info("Person " + personId + " stops waiting at " + waitingTime + "ms");
     }
 
     public void recordTravelTime(UUID personId, Long travelTime) {
-        travelTimes.add(Pair.of(personId, new MutableLong(travelTime)));
+        travelTimes.put(personId, MutablePair.of(travelTime, 0L));
         log.info("Person " + personId + " starts travelling at " + travelTime + "ms");
     }
 
     public void stopTravelTime(UUID personId, Long travelTime) {
-        travelTimes.stream()
-                .filter(p -> p.getLeft().equals(personId))
-                .findFirst()
-                .ifPresent(p -> p.getRight().subtract(travelTime));
+        travelTimes.get(personId).setRight(travelTime);
+
         log.info("Person " + personId + " stops traveling at " + travelTime + "ms");
     }
 
-    public Double getAverageWaitingTime() {
-        return calculateAverage(waitingTimes
+    public Double getAverageWaitingTime(Long timeSimulationStopped) {
+        return calculateAverage(waitingTimes.values()
                 .stream()
-                .map(p -> p.getRight().longValue())
+                .map(longLongMutablePair -> !longLongMutablePair.getRight().equals(0L) ? longLongMutablePair.getRight() - longLongMutablePair.getLeft() : timeSimulationStopped - longLongMutablePair.getLeft())
                 .toList());
     }
 
-    public Double getAverageTravelTime() {
-        return calculateAverage(waitingTimes
+    public Double getAverageTravelTime(Long timeSimulationStopped) {
+        return calculateAverage(travelTimes.values()
                 .stream()
-                .map(p -> p.getRight().longValue())
+                .map(longLongMutablePair -> !longLongMutablePair.getRight().equals(0L) ? longLongMutablePair.getRight() - longLongMutablePair.getLeft() : timeSimulationStopped - longLongMutablePair.getLeft())
                 .toList());
     }
 
-    public Long getMaximumWaitingTime() {
-        return calculateMax(waitingTimes
+    public Long getMaximumWaitingTime(Long timeSimulationStopped) {
+        return calculateMax(waitingTimes.values()
                 .stream()
-                .map(p -> p.getRight().longValue())
+                .map(longLongMutablePair -> !longLongMutablePair.getRight().equals(0L) ? longLongMutablePair.getRight() - longLongMutablePair.getLeft() : timeSimulationStopped - longLongMutablePair.getLeft())
                 .toList());
     }
 
-    public Long getMinimumWaitingTime() {
-        return calculateMin(waitingTimes
+    public Long getMinimumWaitingTime(Long timeSimulationStopped) {
+        return calculateMin(waitingTimes.values()
                 .stream()
-                .map(p -> p.getRight().longValue())
+                .map(longLongMutablePair -> !longLongMutablePair.getRight().equals(0L) ? longLongMutablePair.getRight() - longLongMutablePair.getLeft() : timeSimulationStopped - longLongMutablePair.getLeft())
                 .toList());
     }
 

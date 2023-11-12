@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import java.util.UUID;
 
 import static com.tekal.elevatortechtest.util.ElevatorUtil.createTestElevator;
+import static com.tekal.elevatortechtest.util.ElevatorUtil.createTestPerson;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -54,7 +55,7 @@ class ElevatorTest {
     @Test
     void addPassenger_ShouldSimulateTimePassing() {
         Elevator elevator = createTestElevator();
-        Person person = new Person(UUID.randomUUID(), 10);
+        Person person = createTestPerson();
 
         elevator.addPassenger(person);
 
@@ -66,11 +67,62 @@ class ElevatorTest {
     @Test
     void removePassenger_ShouldSimulateTimePassing() {
         Elevator elevator = createTestElevator();
-        Person person = new Person(UUID.randomUUID(), 10);
+        Person person = createTestPerson();
         elevator.addPassenger(person);
 
         elevator.removePassenger(person);
 
         assertFalse(elevator.isMoving());
+    }
+
+    @Test
+    void move_InvalidTargetFloor_ShouldThrowIllegalArgumentException() {
+        Elevator elevator = createTestElevator();
+
+        assertThrows(IllegalArgumentException.class, () -> elevator.move(0));
+        assertThrows(IllegalArgumentException.class, () -> elevator.move(101));
+    }
+
+    @Test
+    void move_SameTargetFloor_ShouldNotChangeCurrentFloor() {
+        Elevator elevator = createTestElevator();
+
+        elevator.move(5);
+        elevator.move(5);
+
+        assertEquals(5, elevator.getCurrentFloor());
+        assertFalse(elevator.isMoving());
+    }
+
+    @Test
+    void addPassenger_ElevatorFull_ShouldThrowIllegalStateException() {
+        Elevator elevator = createTestElevator();
+
+        // Fill the elevator with 10 passengers
+        for (int i = 0; i < 10; i++) {
+            Person person = createTestPerson();
+            elevator.addPassenger(person);
+        }
+
+        Person extraPerson = createTestPerson();
+        assertThrows(IllegalStateException.class, () -> elevator.addPassenger(extraPerson));
+    }
+
+    @Test
+    void addPassenger_NonWaitingPerson_ShouldThrowIllegalStateException() {
+        Elevator elevator = createTestElevator();
+        Person person = createTestPerson();
+        person.setState(PersonState.IN_ELEVATOR); // Set the person state to non-waiting
+
+        assertThrows(IllegalStateException.class, () -> elevator.addPassenger(person));
+    }
+
+    @Test
+    void addPassenger_PersonOnSameFloor_ShouldThrowIllegalStateException() {
+        Elevator elevator = createTestElevator();
+        Person person = createTestPerson();
+        person.setDestinationFloor(elevator.getCurrentFloor());
+
+        assertThrows(IllegalStateException.class, () -> elevator.addPassenger(person));
     }
 }

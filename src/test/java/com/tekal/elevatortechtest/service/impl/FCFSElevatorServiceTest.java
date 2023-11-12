@@ -2,21 +2,19 @@ package com.tekal.elevatortechtest.service.impl;
 
 import com.tekal.elevatortechtest.model.Elevator;
 import com.tekal.elevatortechtest.model.request.ElevatorCall;
+import com.tekal.elevatortechtest.service.PersonService;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.MockitoAnnotations;
 
+import java.util.Map;
 import java.util.Queue;
 import java.util.Set;
 
 import static com.tekal.elevatortechtest.util.ElevatorUtil.createTestElevator;
-import static org.mockito.Mockito.mock;
-import static org.mockito.Mockito.never;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 public class FCFSElevatorServiceTest {
     @Mock
@@ -24,6 +22,9 @@ public class FCFSElevatorServiceTest {
 
     @Mock
     private Queue<ElevatorCall> elevatorCalls;
+
+    @Mock
+    private PersonService personService;
 
     @InjectMocks
     private FCFSElevatorService elevatorService;
@@ -62,6 +63,7 @@ public class FCFSElevatorServiceTest {
         when(elevatorCalls.isEmpty()).thenReturn(false);
         when(elevator.isMoving()).thenReturn(false);
         when(elevatorCalls.poll()).thenReturn(elevatorCall);
+        when(personService.getPeopleInBuilding()).thenReturn(Map.of());
 
         elevatorService.serveElevatorCalls();
 
@@ -95,6 +97,7 @@ public class FCFSElevatorServiceTest {
         when(elevator1.isMoving()).thenReturn(false);
         when(elevator2.isMoving()).thenReturn(false);
         when(elevatorCalls.poll()).thenReturn(elevatorCall1, elevatorCall2);
+        when(personService.getPeopleInBuilding()).thenReturn(Map.of());
 
         elevatorService.serveElevatorCalls();
 
@@ -113,6 +116,7 @@ public class FCFSElevatorServiceTest {
         when(elevator1.isMoving()).thenReturn(true);
         when(elevator2.isMoving()).thenReturn(false);
         when(elevatorCalls.poll()).thenReturn(elevatorCall1, elevatorCall2);
+        when(personService.getPeopleInBuilding()).thenReturn(Map.of());
 
         elevatorService.serveElevatorCalls();
 
@@ -128,6 +132,7 @@ public class FCFSElevatorServiceTest {
         when(elevators.iterator()).thenReturn(Set.of(elevator).iterator()).thenReturn(Set.of(elevator).iterator());
         when(elevatorCalls.isEmpty()).thenReturn(false);
         when(elevatorCalls.poll()).thenReturn(elevatorCall1).thenReturn(elevatorCall2);
+        when(personService.getPeopleInBuilding()).thenReturn(Map.of());
 
         elevatorService.serveElevatorCalls();
         elevatorService.serveElevatorCalls();

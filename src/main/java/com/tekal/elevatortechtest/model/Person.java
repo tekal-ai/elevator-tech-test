@@ -1,17 +1,16 @@
 package com.tekal.elevatortechtest.model;
 
-import lombok.AllArgsConstructor;
 import lombok.Builder;
-import lombok.Getter;
-import lombok.Setter;
+import lombok.Data;
+import lombok.EqualsAndHashCode;
 
 import java.util.UUID;
 
-@AllArgsConstructor
-@Getter
-@Setter
 @Builder
-public class Person {
+@Data
+public class Person{
     private UUID personId;
-    private int destinationFloor;
+    private Integer destinationFloor;
+    private PersonState state;
 }
+

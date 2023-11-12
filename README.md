@@ -1,64 +1,83 @@
 # Memorable Technical Test: build an elevator system
 
-In this exercise, you are going to design an elevator system for a skyscraper with 100 floors. The goal is to minimize the amount of time spent between calling an elevator and arriving at the destination floor. 
-
-You will have a 48h window to complete the challenge, but we ask you to not spend more than 4hs working on it. 
-
-If any portion of this project’s requirements is relaxed, please include in your solution which requirements they are with a brief description for why they couldn’t be included. 
-
 ## Part A: 
 
-In a programming language of your choice, implement one or more functions that takes as input a time series of elevator calls and destinations and outputs a time series of elevator actions. Given constraints: 
- 
- * There are 3 elevator shafts. 
- * The destination floor is known at the time of the elevator call. 
- * There is a lobby on the 1st floor. 
- * It takes 1 second for the elevator to move 1 floor. 
- * It takes 5 seconds to open the elevator door to pick up / drop-off a passenger. This time is 30 seconds for the lobby floor. 
- * A maximum of 10 people can fit into the elevator car at any one time. 
- * Multiple people can enter the elevator during a pick up, and each person can have a different destination floor.
- 
+For Part A I've decided to create a Web Controller for the Elevator System. The Web Controller is a Spring Boot + Java 
+application that exposes a REST API to interact with the underlying Elevator System.
 
-## Part B: 
+### Usage
 
-Implement a simulator that generates the time series of elevator calls to feed the function in part A. It should use the following assumptions when generating the inputs: 
+To begin using the Elevator System, clone this repository to your local machine:
 
-Except for the lobby, all other floors have a uniform distribution of number and frequency of calls. The number of passengers per call is random according to a lognormal distribution, rounded to the nearest integer in the range (0, 5]. The random functions should be seeded in such a way that the results of any run can be reproduced if the same seed is used. 
- 
-After the simulator runs, it should produce summary statistics that describe: 
+```shell
+git clone https://github.com/tomassirio/elevator-tech-test.git
+cd ./elevator-tech-test
+```
 
- * The average time spent waiting for an elevator 
- * The average time spent inside an elevator 
- * The average total time spent 
- * The maximum and minimum time any passenger had to wait
- 
+Build the project using the Maven wrapper:
 
-## How to deliver your solution:
-1. You should fork this repository and invite the following collaborators:
-- @cfosco
-- @GonzaloGregorio
-- @diegomedinacastillo
-- @andrescanabarro
+```shell
+./mvnw clean verify
+```
 
-2. Commit your solution to your fork, and send us an email when you're done.
-3. Your fork should contain a markdown document (you can overwrite this README) with an explanation of your solution. Explain any technical decisions, considerations and additional constraints you took into account.
-4. Include detailed instructions on how to build and run the application. Any automation you can add here will be greatly appreciated. 
+Run the project using the Maven wrapper:
 
+```shell
+./mvnw spring-boot:run
+```
 
-**Additionally**
+Once the project is running, you can interact with the Elevator System using the following REST API:
 
-Engineers at Memorable have a collaborative culture, and we often discuss projects across teams. Consider yourself our colleague on this project, and please don’t hesitate to reach out to us for clarification on any requirements or guidance if you’re having trouble. In other words: feel free to ask questions. 
+#### Elevator API
 
-We are looking for high quality work, so we would rather see something that is functionally incomplete but well-designed and tested than something that is of lower quality. Please expect that each decision may be questioned by any engineer in the review discussion and design accordingly. You should expect to actually demo your solution. 
+You can interact with it via CURL or Postman. The following endpoints are available:
 
-If there are additional features or changes that you wuld like to implement with more time, enumerate them in the README.
+- **GET**   /v1/elevator/services -> Returns the list of available Elevator Services
+- **POST**  /v1/elevator/activate -> Activates an Elevator Service
+- **POST** /v1/people/add         -> Adds a Person to the Elevator System
 
+##### Examples
 
+```shell
+curl http://localhost:8080/v1/elevator/services
+```
 
+```shell
+curl -X POST "http://localhost:8080/v1/elevator/activate?serviceName=FCFSElevatorService"
+```
 
+```shell
+curl -X POST http://localhost:8080/v1/people/add -H "Content-Type: application/json" -d '{"calledFromFloor": 1, "destinationFloor": 5}'
+```
 
+#### Open-API
 
+Additionally, you can interact with the API through the browser following this link http://localhost:8080/swagger-ui/index.html
 
+### Elevator System
+
+The Elevator System Creates at Startup 3 Elevators, A Queue for Each ElevatorService, and a HashMap representing the 
+building and the floors.
+
+At Runtime, the Elevator System can receive pickup requests from the Web Controller. A pickup request creates a 
+Person + an ElevatorCall to be processed by the Active ElevatorService.
+
+### Technical Choices
+
+### Asynchronous Processing
+The Elevator System is designed to be asynchronous. The Elevator System receives an ElevatorCall request synchronously throught
+the Web Controller, but then the Elevator System processes the request asynchronously. This is done to have elevators
+work in parallel and to avoid blocking the Web Controller while returning a Response
+
+### ElevatorService
+The ElevatorService is designed as an Interface which can then be implemented by different algorithmic choices.
+Each time an ElevatorService is implemented, the ElevatorServiceManager will add the implementation to the current available
+ElevatorServices.
+At Runtime one would be able to switch between different ElevatorServices by sending a POST message through the ElevatorController.
+
+### ElevatorManager and ElevatorContextController
+In order to grant scalability and encapsulation, the ElevatorManager is designed as a Singleton which carries the 
+instance of ElevatorService active at the moment. This ElevatorService can be changed during Runtime via the EventContextController
 
 
 

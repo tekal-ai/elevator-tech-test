@@ -14,6 +14,7 @@ public class ElevatorFactory {
                 .currentFloor(1)
                 .passengers(new HashSet<>())
                 .timeProvider(new RealTimeProvider())
+                .isMoving(Boolean.FALSE)
                 .build();
     }
 

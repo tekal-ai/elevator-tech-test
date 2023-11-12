@@ -5,6 +5,7 @@ import org.junit.jupiter.api.Test;
 import java.util.UUID;
 
 import static com.tekal.elevatortechtest.util.ElevatorUtil.createTestElevator;
+import static com.tekal.elevatortechtest.util.ElevatorUtil.createTestPerson;
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.times;
 import static org.mockito.Mockito.verify;
@@ -54,7 +55,7 @@ class ElevatorTest {
     @Test
     void addPassenger_ShouldSimulateTimePassing() {
         Elevator elevator = createTestElevator();
-        Person person = new Person(UUID.randomUUID(), 10);
+        Person person = createTestPerson();
 
         elevator.addPassenger(person);
 
@@ -66,7 +67,7 @@ class ElevatorTest {
     @Test
     void removePassenger_ShouldSimulateTimePassing() {
         Elevator elevator = createTestElevator();
-        Person person = new Person(UUID.randomUUID(), 10);
+        Person person = createTestPerson();
         elevator.addPassenger(person);
 
         elevator.removePassenger(person);

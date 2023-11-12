@@ -6,6 +6,7 @@ import lombok.Builder;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.Objects;
 import java.util.Set;
 import java.util.UUID;
 
@@ -25,6 +26,12 @@ public class Elevator {
     }
 
     public void move(Integer targetFloor) {
+        if (targetFloor < 1 || targetFloor > 100) {
+            throw new IllegalArgumentException("Target floor must be between 1 and 100");
+        }
+        if (Objects.equals(targetFloor, currentFloor)) {
+            return;
+        }
         this.isMoving = Boolean.TRUE;
         int floorsToMove = Math.abs(targetFloor - currentFloor);
         simulateTimePassing(floorsToMove);
@@ -45,7 +52,15 @@ public class Elevator {
     }
 
     public void addPassenger(Person person) {
-
+        if(passengers.size() == 10) {
+            throw new IllegalStateException("Elevator is full");
+        }
+        if (person.getState() != PersonState.WAITING) {
+            throw new IllegalStateException("Person is not waiting");
+        }
+        if (Objects.equals(person.getDestinationFloor(), currentFloor)) {
+            throw new IllegalStateException("Person is already on the same floor as the elevator");
+        }
         simulateTimePassing(5);
         passengers.add(person);
     }

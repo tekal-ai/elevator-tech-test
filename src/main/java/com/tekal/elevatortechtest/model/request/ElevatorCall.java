@@ -1,4 +1,13 @@
 package com.tekal.elevatortechtest.model.request;
 
-public record ElevatorCall(Integer calledFromFloor, Integer destinationFloor) {
+import lombok.AllArgsConstructor;
+import lombok.Builder;
+import lombok.Data;
+
+@Builder
+@Data
+@AllArgsConstructor
+public class ElevatorCall {
+    private final Integer calledFromFloor;
+    private final Integer destinationFloor;
 }

@@ -3,15 +3,14 @@ package com.tekal.elevatortechtest.service.impl;
 import com.tekal.elevatortechtest.model.Elevator;
 import com.tekal.elevatortechtest.model.request.ElevatorCall;
 import com.tekal.elevatortechtest.service.ElevatorService;
+import com.tekal.elevatortechtest.service.PersonService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 import io.reactivex.rxjava3.core.Observable;
 
-import java.util.Objects;
-import java.util.Queue;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.*;
 
 @Service
@@ -21,9 +20,9 @@ public class FCFSElevatorService extends ElevatorCallServer implements ElevatorS
     private final Set<Elevator> elevators;
     private final Queue<ElevatorCall> elevatorCalls;
 
-
     @Autowired
-    public FCFSElevatorService(Set<Elevator> elevators, Queue<ElevatorCall> elevatorCalls) {
+    public FCFSElevatorService(Set<Elevator> elevators, Queue<ElevatorCall> elevatorCalls, PersonService personService) {
+        super(personService);
         this.elevators = elevators;
         this.elevatorCalls = elevatorCalls;
         startElevatorServiceThread();
@@ -31,7 +30,7 @@ public class FCFSElevatorService extends ElevatorCallServer implements ElevatorS
 
     @Override
     public void processElevatorCall(ElevatorCall elevatorCall) {
-        log.info("Processing Elevator Call: " + elevatorCall.calledFromFloor() + " -> " + elevatorCall.destinationFloor());
+        log.info("Processing Elevator Call: " + elevatorCall.getCalledFromFloor() + " -> " + elevatorCall.getDestinationFloor());
         elevatorCalls.offer(elevatorCall);
     }
 
@@ -45,8 +44,11 @@ public class FCFSElevatorService extends ElevatorCallServer implements ElevatorS
             synchronized (elevators) {
                 for (Elevator elevator : elevators) {
                     if (!elevator.isMoving()) {
-                        log.info("Elevator " + elevator.getElevatorId() + " is not moving, serving call");
-                        serveElevatorCall(elevator, Objects.requireNonNull(elevatorCalls.poll()));
+                        ElevatorCall elevatorCall = elevatorCalls.poll();
+                        if (elevatorCall != null) {
+                            log.info("Elevator " + elevator.getElevatorId() + " is not moving, serving call");
+                            serveElevatorCall(elevator, elevatorCall);
+                        }
                     }
                 }
             }

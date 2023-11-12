@@ -3,6 +3,7 @@ package com.tekal.elevatortechtest.service.impl;
 import com.tekal.elevatortechtest.model.Elevator;
 import com.tekal.elevatortechtest.model.request.ElevatorCall;
 import com.tekal.elevatortechtest.service.ElevatorService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
@@ -14,6 +15,7 @@ import java.util.Set;
 import java.util.concurrent.*;
 
 @Service
+@Slf4j
 public class FCFSElevatorService extends ElevatorCallServer implements ElevatorService {
 
     private final Set<Elevator> elevators;
@@ -29,6 +31,7 @@ public class FCFSElevatorService extends ElevatorCallServer implements ElevatorS
 
     @Override
     public void processElevatorCall(ElevatorCall elevatorCall) {
+        log.info("Processing Elevator Call: " + elevatorCall.calledFromFloor() + " -> " + elevatorCall.destinationFloor());
         elevatorCalls.offer(elevatorCall);
     }
 
@@ -36,11 +39,13 @@ public class FCFSElevatorService extends ElevatorCallServer implements ElevatorS
     protected void serveElevatorCalls() {
         synchronized (elevatorCalls){
             if(elevatorCalls.isEmpty()) {
+                log.trace("No elevator calls to serve");
                 return;
             }
             synchronized (elevators) {
                 for (Elevator elevator : elevators) {
                     if (!elevator.isMoving()) {
+                        log.info("Elevator " + elevator.getElevatorId() + " is not moving, serving call");
                         serveElevatorCall(elevator, Objects.requireNonNull(elevatorCalls.poll()));
                     }
                 }

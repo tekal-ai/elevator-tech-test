@@ -74,4 +74,55 @@ class ElevatorTest {
 
         assertFalse(elevator.isMoving());
     }
+
+    @Test
+    void move_InvalidTargetFloor_ShouldThrowIllegalArgumentException() {
+        Elevator elevator = createTestElevator();
+
+        assertThrows(IllegalArgumentException.class, () -> elevator.move(0));
+        assertThrows(IllegalArgumentException.class, () -> elevator.move(101));
+    }
+
+    @Test
+    void move_SameTargetFloor_ShouldNotChangeCurrentFloor() {
+        Elevator elevator = createTestElevator();
+
+        elevator.move(5);
+        elevator.move(5);
+
+        assertEquals(5, elevator.getCurrentFloor());
+        assertFalse(elevator.isMoving());
+    }
+
+    @Test
+    void addPassenger_ElevatorFull_ShouldThrowIllegalStateException() {
+        Elevator elevator = createTestElevator();
+
+        // Fill the elevator with 10 passengers
+        for (int i = 0; i < 10; i++) {
+            Person person = createTestPerson();
+            elevator.addPassenger(person);
+        }
+
+        Person extraPerson = createTestPerson();
+        assertThrows(IllegalStateException.class, () -> elevator.addPassenger(extraPerson));
+    }
+
+    @Test
+    void addPassenger_NonWaitingPerson_ShouldThrowIllegalStateException() {
+        Elevator elevator = createTestElevator();
+        Person person = createTestPerson();
+        person.setState(PersonState.IN_ELEVATOR); // Set the person state to non-waiting
+
+        assertThrows(IllegalStateException.class, () -> elevator.addPassenger(person));
+    }
+
+    @Test
+    void addPassenger_PersonOnSameFloor_ShouldThrowIllegalStateException() {
+        Elevator elevator = createTestElevator();
+        Person person = createTestPerson();
+        person.setDestinationFloor(elevator.getCurrentFloor());
+
+        assertThrows(IllegalStateException.class, () -> elevator.addPassenger(person));
+    }
 }

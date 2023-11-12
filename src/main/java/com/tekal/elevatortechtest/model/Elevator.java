@@ -30,6 +30,7 @@ public class Elevator {
             throw new IllegalArgumentException("Target floor must be between 1 and 100");
         }
         if (Objects.equals(targetFloor, currentFloor)) {
+            this.isMoving = Boolean.FALSE;
             return;
         }
         this.isMoving = Boolean.TRUE;

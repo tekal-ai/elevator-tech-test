@@ -20,8 +20,8 @@ public class PersonController {
     private final PersonService personService;
 
     @Autowired
-    public PersonController(ElevatorServiceManager elevatorService, PersonService personService) {
-        this.elevatorService = elevatorService.getActiveElevatorService();
+    public PersonController(ElevatorServiceManager elevatorServiceManager, PersonService personService) {
+        this.elevatorService = elevatorServiceManager.getActiveElevatorService();
         this.personService = personService;
     }
 

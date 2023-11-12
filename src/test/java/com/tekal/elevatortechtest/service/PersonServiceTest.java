@@ -16,13 +16,15 @@ import java.util.UUID;
 
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.junit.jupiter.api.Assertions.assertTrue;
-import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.ArgumentMatchers.anyInt;
+import static org.mockito.ArgumentMatchers.*;
 import static org.mockito.Mockito.when;
 
 class PersonServiceTest {
     @Mock
     private Map<Integer, List<Person>> peopleInBuilding;
+
+    @Mock
+    private StatisticsService statisticsService;
 
     @InjectMocks
     private PersonService personService;
@@ -72,7 +74,7 @@ class PersonServiceTest {
                 1, List.of(Person.builder().personId(UUID.randomUUID()).destinationFloor(5).state(PersonState.WAITING).build()),
                 3, List.of(Person.builder().personId(UUID.randomUUID()).destinationFloor(7).state(PersonState.IN_ELEVATOR).build())
         );
-        PersonService personService = new PersonService(peopleInBuilding);
+        PersonService personService = new PersonService(peopleInBuilding, null);
 
         // Act
         Map<Integer, List<Person>> result = personService.getPeopleInBuilding();

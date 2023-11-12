@@ -7,6 +7,7 @@ import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
+import java.time.Instant;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.Map;
@@ -17,9 +18,12 @@ import java.util.UUID;
 public class PersonService {
     private final Map<Integer, List<Person>> peopleInBuilding;
 
+    private final StatisticsService statisticsService;
+
     @Autowired
-    public PersonService(Map<Integer, List<Person>> peopleInBuilding) {
+    public PersonService(Map<Integer, List<Person>> peopleInBuilding, StatisticsService statisticsService) {
         this.peopleInBuilding = peopleInBuilding;
+        this.statisticsService = statisticsService;
     }
 
     public Person addPersonToBuilding(ElevatorCall elevatorCall) {
@@ -32,6 +36,7 @@ public class PersonService {
         log.info("Adding person " + person.getPersonId() + " to floor " + elevatorCall.getCalledFromFloor());
         List<Person> peopleAtFloor = peopleInBuilding.computeIfAbsent(elevatorCall.getCalledFromFloor(), k -> new ArrayList<>());
         peopleAtFloor.add(person);
+        statisticsService.recordWaitingTime(person.getPersonId(), Instant.now().toEpochMilli());
 
         return person;
     }

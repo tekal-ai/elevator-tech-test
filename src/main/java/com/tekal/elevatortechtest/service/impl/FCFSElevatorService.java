@@ -4,6 +4,8 @@ import com.tekal.elevatortechtest.model.Elevator;
 import com.tekal.elevatortechtest.model.request.ElevatorCall;
 import com.tekal.elevatortechtest.service.ElevatorService;
 import com.tekal.elevatortechtest.service.PersonService;
+import com.tekal.elevatortechtest.service.SimulationService;
+import com.tekal.elevatortechtest.service.StatisticsService;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
@@ -21,8 +23,8 @@ public class FCFSElevatorService extends ElevatorCallServer implements ElevatorS
     private final Queue<ElevatorCall> elevatorCalls;
 
     @Autowired
-    public FCFSElevatorService(Set<Elevator> elevators, Queue<ElevatorCall> elevatorCalls, PersonService personService) {
-        super(personService);
+    public FCFSElevatorService(Set<Elevator> elevators, Queue<ElevatorCall> elevatorCalls, PersonService personService, StatisticsService statisticsService) {
+        super(personService, statisticsService);
         this.elevators = elevators;
         this.elevatorCalls = elevatorCalls;
         startElevatorServiceThread();

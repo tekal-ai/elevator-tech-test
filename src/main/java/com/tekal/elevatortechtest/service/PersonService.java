@@ -3,6 +3,7 @@ package com.tekal.elevatortechtest.service;
 import com.tekal.elevatortechtest.model.Person;
 import com.tekal.elevatortechtest.model.PersonState;
 import com.tekal.elevatortechtest.model.request.ElevatorCall;
+import lombok.Getter;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -16,6 +17,7 @@ import java.util.UUID;
 @Service
 @Slf4j
 public class PersonService {
+    @Getter
     private final Map<Integer, List<Person>> peopleInBuilding;
 
     private final StatisticsService statisticsService;
@@ -45,9 +47,5 @@ public class PersonService {
         List<Person> peopleAtFloor = peopleInBuilding.computeIfAbsent(person.getDestinationFloor(), k -> new ArrayList<>());
         peopleAtFloor.add(person);
         log.info("Person " + person.getPersonId() + " moving to " + person.getDestinationFloor());
-    }
-
-    public Map<Integer, List<Person>> getPeopleInBuilding() {
-        return peopleInBuilding;
     }
 }

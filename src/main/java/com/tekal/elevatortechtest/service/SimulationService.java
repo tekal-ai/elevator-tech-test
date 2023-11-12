@@ -1,10 +1,8 @@
 package com.tekal.elevatortechtest.service;
 
 import com.tekal.elevatortechtest.controller.Response.SimulationResult;
-import com.tekal.elevatortechtest.model.Person;
-import com.tekal.elevatortechtest.model.request.SimulationRequest;
 import com.tekal.elevatortechtest.model.request.ElevatorCall;
-import com.tekal.elevatortechtest.service.manager.ElevatorServiceManager;
+import com.tekal.elevatortechtest.model.request.SimulationRequest;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.math3.distribution.LogNormalDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
@@ -12,10 +10,6 @@ import org.apache.commons.math3.random.Well19937c;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
-import java.util.ArrayList;
-import java.util.List;
-import java.util.Random;
-import java.util.concurrent.CompletableFuture;
 import java.util.concurrent.TimeUnit;
 
 @Service
@@ -39,16 +33,18 @@ public class SimulationService {
 
         while (System.currentTimeMillis() < simulationEndTime) {
             generateRandomElevatorCall(randomGenerator);
-            sleep(1000);
+            sleep(5000);
         }
 
         log.info("Simulation complete, calculating statistics");
 
+        Long simulationFinishedTime = System.currentTimeMillis();
+
         return SimulationResult.builder()
-                .averageWaitingTime(statisticsService.getAverageWaitingTime())
-                .averageTravelTime(statisticsService.getAverageTravelTime())
-                .maxWaitingTime(statisticsService.getMaximumWaitingTime())
-                .minWaitingTime(statisticsService.getMinimumWaitingTime())
+                .averageWaitingTime(TimeUnit.MILLISECONDS.toSeconds(statisticsService.getAverageWaitingTime(simulationFinishedTime).longValue()))
+                .averageTravelTime(TimeUnit.MILLISECONDS.toSeconds(statisticsService.getAverageTravelTime(simulationFinishedTime).longValue()))
+                .maxWaitingTime(TimeUnit.MILLISECONDS.toSeconds(statisticsService.getMaximumWaitingTime(simulationFinishedTime)))
+                .minWaitingTime(TimeUnit.MILLISECONDS.toSeconds(statisticsService.getMinimumWaitingTime(simulationFinishedTime)))
                 .build();
     }
 

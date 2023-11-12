@@ -79,7 +79,25 @@ At Runtime one would be able to switch between different ElevatorServices by sen
 In order to grant scalability and encapsulation, the ElevatorManager is designed as a Singleton which carries the 
 instance of ElevatorService active at the moment. This ElevatorService can be changed during Runtime via the EventContextController
 
+---
 
+## Part B:
 
+The Simulator is implemented over a REST controller with a Single Endpoint:
 
+- POST /v1/simulation/run -> Runs the Simulation
 
+The Simulator is designed to be asynchronous. The Simulator receives a SimulationRequest synchronously through
+the Web Controller, but then the Simulator processes the request asynchronously
+
+### Usage
+
+Run an instance of the application and run the following CURL command:
+
+```shell
+curl -X POST http://localhost:8080/v1/simulation/run -H "Content-Type: application/json" -d '{"simulationSeed": 123, "durationInSeconds": 10}'
+```
+
+Alternatively, you can interact with the API through the browser following this link http://localhost:8080/swagger-ui/index.html
+
+A Response will be returned with the simulation results.

@@ -12,8 +12,6 @@ import java.util.Queue;
 import java.util.Set;
 
 import static com.tekal.elevatortechtest.util.ElevatorUtil.createTestElevator;
-import static org.mockito.ArgumentMatchers.eq;
-import static org.mockito.Mockito.any;
 import static org.mockito.Mockito.mock;
 import static org.mockito.Mockito.never;
 import static org.mockito.Mockito.times;
@@ -121,20 +119,20 @@ public class FCFSElevatorServiceTest {
         verify(elevatorCalls, times(1)).poll();
     }
 
-//    @Test
-//    void test_ServeElevatorCalls_with_one_elevator_and_two_requests() {
-//        Elevator elevator = mock(Elevator.class);
-//        ElevatorCall elevatorCall1 = new ElevatorCall(1, 5);
-//        ElevatorCall elevatorCall2 = new ElevatorCall(3, 7);
-//
-//        when(elevators.iterator()).thenReturn(Set.of(elevator).iterator());
-//        when(elevatorCalls.isEmpty()).thenReturn(false);
-//        when(elevator.isMoving()).thenReturn(false);
-//        when(elevatorCalls.poll()).thenReturn(elevatorCall1, elevatorCall2);
-//
-//        elevatorService.serveElevatorCalls();
-//
-//        verify(elevatorCalls, times(2)).poll();
-//    }
+    @Test
+    void test_ServeElevatorCalls_with_one_elevator_and_two_requests() {
+        Elevator elevator = createTestElevator();
+        ElevatorCall elevatorCall1 = new ElevatorCall(1, 5);
+        ElevatorCall elevatorCall2 = new ElevatorCall(3, 7);
+
+        when(elevators.iterator()).thenReturn(Set.of(elevator).iterator()).thenReturn(Set.of(elevator).iterator());
+        when(elevatorCalls.isEmpty()).thenReturn(false);
+        when(elevatorCalls.poll()).thenReturn(elevatorCall1).thenReturn(elevatorCall2);
+
+        elevatorService.serveElevatorCalls();
+        elevatorService.serveElevatorCalls();
+
+        verify(elevatorCalls, times(2)).poll();
+    }
 
 }

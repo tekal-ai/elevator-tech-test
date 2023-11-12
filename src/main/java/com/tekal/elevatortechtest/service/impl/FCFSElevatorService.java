@@ -34,12 +34,16 @@ public class FCFSElevatorService extends ElevatorCallServer implements ElevatorS
 
     @Override
     protected void serveElevatorCalls() {
-        if(elevatorCalls.isEmpty()) {
-            return;
-        }
-        for (Elevator elevator : elevators) {
-            if (!elevator.isMoving()) {
-                serveElevatorCall(elevator, Objects.requireNonNull(elevatorCalls.poll()));
+        synchronized (elevatorCalls){
+            if(elevatorCalls.isEmpty()) {
+                return;
+            }
+            synchronized (elevators) {
+                for (Elevator elevator : elevators) {
+                    if (!elevator.isMoving()) {
+                        serveElevatorCall(elevator, Objects.requireNonNull(elevatorCalls.poll()));
+                    }
+                }
             }
         }
     }

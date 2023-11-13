@@ -11,19 +11,19 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.scheduling.annotation.Async;
 import org.springframework.stereotype.Service;
 
-import java.util.Queue;
-import java.util.Set;
+import java.util.*;
 import java.util.concurrent.TimeUnit;
 
 @Service
 @Slf4j
-public class FCFSElevatorService extends ElevatorCallServer implements ElevatorService {
+public class ScanElevatorService extends ElevatorCallServer implements ElevatorService {
 
     private final Set<Elevator> elevators;
     private final Queue<ElevatorCall> elevatorCalls;
+    private boolean movingUp = true;
 
     @Autowired
-    public FCFSElevatorService(Set<Elevator> elevators, Queue<ElevatorCall> elevatorCalls, PersonService personService, StatisticsService statisticsService) {
+    public ScanElevatorService(Set<Elevator> elevators, Queue<ElevatorCall> elevatorCalls, PersonService personService, StatisticsService statisticsService) {
         super(personService, statisticsService);
         this.elevators = elevators;
         this.elevatorCalls = elevatorCalls;
@@ -45,7 +45,7 @@ public class FCFSElevatorService extends ElevatorCallServer implements ElevatorS
             }
             synchronized (elevators) {
                 for (Elevator elevator : elevators.stream().filter(elevator -> !elevator.isMoving()).toList()) {
-                    ElevatorCall elevatorCall = elevatorCalls.poll();
+                    ElevatorCall elevatorCall = getNextElevatorCall(elevator);
                     if (elevatorCall != null) {
                         log.info("Elevator " + elevator.getElevatorId() + " is not moving, serving call");
                         serveElevatorCall(elevator, elevatorCall);
@@ -54,6 +54,42 @@ public class FCFSElevatorService extends ElevatorCallServer implements ElevatorS
             }
         }
     }
+
+    private ElevatorCall getNextElevatorCall(Elevator elevator) {
+        synchronized (elevatorCalls) {
+            if (elevatorCalls.isEmpty()) {
+                return null;
+            }
+
+            // Sorting the elevator calls based on the current direction
+            List<ElevatorCall> sortedCalls = new ArrayList<>(elevatorCalls);
+            if (movingUp) {
+                sortedCalls.sort(Comparator.comparingInt(ElevatorCall::getCalledFromFloor));
+            } else {
+                sortedCalls.sort(Comparator.comparingInt(ElevatorCall::getCalledFromFloor).reversed());
+            }
+
+            // Find the next elevator call based on the current direction
+            for (ElevatorCall call : sortedCalls) {
+                if (isCallInDirection(call, elevator.getCurrentFloor())) {
+                    elevatorCalls.remove(call);
+                    return call;
+                }
+            }
+
+            // If no call in the current direction, change direction and try again
+            movingUp = !movingUp;
+
+            // Recursively call to get the next call in the new direction
+            return getNextElevatorCall(elevator);
+        }
+    }
+
+    private boolean isCallInDirection(ElevatorCall call, Integer currentFloor) {
+        return (movingUp && call.getCalledFromFloor() >= currentFloor) ||
+                (!movingUp && call.getCalledFromFloor() <= currentFloor);
+    }
+
 
     @Async
     protected void startElevatorServiceThread() {

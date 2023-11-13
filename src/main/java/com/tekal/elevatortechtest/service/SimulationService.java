@@ -3,6 +3,7 @@ package com.tekal.elevatortechtest.service;
 import com.tekal.elevatortechtest.controller.Response.SimulationResult;
 import com.tekal.elevatortechtest.model.request.ElevatorCall;
 import com.tekal.elevatortechtest.model.request.SimulationRequest;
+import com.tekal.elevatortechtest.service.manager.ElevatorServiceManager;
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.math3.distribution.LogNormalDistribution;
 import org.apache.commons.math3.random.RandomGenerator;
@@ -15,13 +16,13 @@ import java.util.concurrent.TimeUnit;
 @Service
 @Slf4j
 public class SimulationService {
-    private final ElevatorService elevatorService;
+    private final ElevatorServiceManager elevatorServiceManager;
     private final PersonService personService;
     private final StatisticsService statisticsService;
 
     @Autowired
-    public SimulationService(ElevatorService elevatorService, PersonService personService, StatisticsService statisticsService) {
-        this.elevatorService = elevatorService;
+    public SimulationService(ElevatorServiceManager elevatorServiceManager, PersonService personService, StatisticsService statisticsService) {
+        this.elevatorServiceManager = elevatorServiceManager;
         this.personService = personService;
         this.statisticsService = statisticsService;
     }
@@ -44,6 +45,7 @@ public class SimulationService {
                 .simulationId(statisticsService.generateSimulationId().toString())
                 .seed(simulationRequest.simulationSeed())
                 .durationInSeconds(simulationRequest.durationInSeconds())
+                .activeElevatorService(elevatorServiceManager.getActiveElevatorService().getClass().getSimpleName())
                 .averageWaitingTime(convertToSeconds(statisticsService.getAverageWaitingTime(simulationFinishedTime).longValue()))
                 .averageTravelTime(convertToSeconds(statisticsService.getAverageTravelTime(simulationFinishedTime).longValue()))
                 .maxWaitingTime(convertToSeconds(statisticsService.getMaximumWaitingTime(simulationFinishedTime)))
@@ -74,7 +76,7 @@ public class SimulationService {
             }
             ElevatorCall elevatorCall = new ElevatorCall(calledFromFloor, destinationFloor);
             personService.addPersonToBuilding(elevatorCall);
-            elevatorService.processElevatorCall(elevatorCall);
+            elevatorServiceManager.getActiveElevatorService().processElevatorCall(elevatorCall);
         }
 
     }

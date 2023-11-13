@@ -16,19 +16,19 @@ import org.springframework.web.bind.annotation.RestController;
 @RequestMapping("/v1/people")
 public class PersonController {
 
-    private final ElevatorService elevatorService;
+    private final ElevatorServiceManager elevatorServiceManager;
     private final PersonService personService;
 
     @Autowired
     public PersonController(ElevatorServiceManager elevatorServiceManager, PersonService personService) {
-        this.elevatorService = elevatorServiceManager.getActiveElevatorService();
+        this.elevatorServiceManager = elevatorServiceManager;
         this.personService = personService;
     }
 
     @PostMapping("/add")
     public ResponseEntity<Person> addPerson(@RequestBody ElevatorCall elevatorCall) {
         Person newPerson = personService.addPersonToBuilding(elevatorCall);
-        elevatorService.processElevatorCall(elevatorCall);
+        elevatorServiceManager.getActiveElevatorService().processElevatorCall(elevatorCall);
 
         return ResponseEntity.ok(newPerson);
     }

@@ -13,6 +13,7 @@ public class SimulationResult {
     private final String simulationId;
     private final Long seed;
     private final Integer durationInSeconds;
+    private final String activeElevatorService;
     private final Long averageWaitingTime;
     private final Long averageTravelTime;
     private final Long maxWaitingTime;

@@ -20,6 +20,7 @@ public class SimulationResult {
     private final Long maximumTravelTime;
     private final Long minimumTravelTime;
     private final Integer countFinishedTravels;
+    private final Integer countUnfinishedTravels;
     private final Integer totalPeople;
     private final List<Pair<UUID, Long>> peopleFinishedTravels;
 }

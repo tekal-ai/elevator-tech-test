@@ -51,6 +51,7 @@ public class SimulationService {
                 .maximumTravelTime(convertToSeconds(statisticsService.getMaximumTravelTime(simulationFinishedTime)))
                 .minimumTravelTime(convertToSeconds(statisticsService.getMinimumTravelTime(simulationFinishedTime)))
                 .countFinishedTravels(statisticsService.countFinishedTravels())
+                .countUnfinishedTravels(statisticsService.countUnfinishedTravels())
                 .totalPeople(statisticsService.countTotalPeople())
                 .peopleFinishedTravels(statisticsService.getPeopleFinishedTravels())
                 .build();

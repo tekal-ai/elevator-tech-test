@@ -2,6 +2,7 @@ package com.tekal.elevatortechtest.service;
 
 import lombok.extern.slf4j.Slf4j;
 import org.apache.commons.lang3.tuple.MutablePair;
+import org.apache.commons.lang3.tuple.Pair;
 import org.springframework.stereotype.Service;
 
 import java.util.HashMap;
@@ -13,8 +14,8 @@ import java.util.UUID;
 @Slf4j
 public class StatisticsService {
 
-    private Map<UUID, MutablePair<Long, Long>> waitingTimes = new HashMap<>();
-    private Map<UUID, MutablePair<Long, Long>> travelTimes = new HashMap<>();
+    private final Map<UUID, MutablePair<Long, Long>> waitingTimes = new HashMap<>();
+    private final Map<UUID, MutablePair<Long, Long>> travelTimes = new HashMap<>();
 
     public void recordWaitingTime(UUID personId, Long waitingTime) {
         waitingTimes.put(personId, MutablePair.of(waitingTime, 0L));
@@ -63,6 +64,35 @@ public class StatisticsService {
                 .stream()
                 .map(longLongMutablePair -> !longLongMutablePair.getRight().equals(0L) ? longLongMutablePair.getRight() - longLongMutablePair.getLeft() : timeSimulationStopped - longLongMutablePair.getLeft())
                 .toList());
+    }
+
+    public Long getMaximumTravelTime(Long timeSimulationStopped) {
+        return calculateMax(travelTimes.values()
+                .stream()
+                .map(longLongMutablePair -> !longLongMutablePair.getRight().equals(0L) ? longLongMutablePair.getRight() - longLongMutablePair.getLeft() : timeSimulationStopped - longLongMutablePair.getLeft())
+                .toList());
+    }
+
+    public Long getMinimumTravelTime(Long timeSimulationStopped) {
+        return calculateMin(travelTimes.values()
+                .stream()
+                .map(longLongMutablePair -> !longLongMutablePair.getRight().equals(0L) ? longLongMutablePair.getRight() - longLongMutablePair.getLeft() : timeSimulationStopped - longLongMutablePair.getLeft())
+                .toList());
+    }
+
+    public Integer countFinishedTravels() {
+        return travelTimes.values().stream().filter(pair -> !pair.getRight().equals(0L)).toList().size();
+    }
+
+    public Integer countTotalPeople() {
+        return waitingTimes.entrySet().size();
+    }
+
+    public List<Pair<UUID, Long>> getPeopleFinishedTravels() {
+        return travelTimes.entrySet().stream()
+                .filter(pair -> !pair.getValue().getRight().equals(0L))
+                .map(entry -> Pair.of(entry.getKey(), entry.getValue().getRight() - entry.getValue().getLeft()))
+                .toList();
     }
 
     // Add other methods as needed

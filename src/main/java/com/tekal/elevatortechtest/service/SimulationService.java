@@ -33,7 +33,7 @@ public class SimulationService {
 
         while (System.currentTimeMillis() < simulationEndTime) {
             generateRandomElevatorCall(randomGenerator);
-            sleep(5000);
+            sleep();
         }
 
         log.info("Simulation complete, calculating statistics");
@@ -41,17 +41,22 @@ public class SimulationService {
         Long simulationFinishedTime = System.currentTimeMillis();
 
         return SimulationResult.builder()
-                .averageWaitingTime(TimeUnit.MILLISECONDS.toSeconds(statisticsService.getAverageWaitingTime(simulationFinishedTime).longValue()))
-                .averageTravelTime(TimeUnit.MILLISECONDS.toSeconds(statisticsService.getAverageTravelTime(simulationFinishedTime).longValue()))
-                .maxWaitingTime(TimeUnit.MILLISECONDS.toSeconds(statisticsService.getMaximumWaitingTime(simulationFinishedTime)))
-                .minWaitingTime(TimeUnit.MILLISECONDS.toSeconds(statisticsService.getMinimumWaitingTime(simulationFinishedTime)))
+                .averageWaitingTime(convertToSeconds(statisticsService.getAverageWaitingTime(simulationFinishedTime).longValue()))
+                .averageTravelTime(convertToSeconds(statisticsService.getAverageTravelTime(simulationFinishedTime).longValue()))
+                .maxWaitingTime(convertToSeconds(statisticsService.getMaximumWaitingTime(simulationFinishedTime)))
+                .minWaitingTime(convertToSeconds(statisticsService.getMinimumWaitingTime(simulationFinishedTime)))
+                .maximumTravelTime(convertToSeconds(statisticsService.getMaximumTravelTime(simulationFinishedTime)))
+                .minimumTravelTime(convertToSeconds(statisticsService.getMinimumTravelTime(simulationFinishedTime)))
+                .countFinishedTravels(statisticsService.countFinishedTravels())
+                .totalPeople(statisticsService.countTotalPeople())
+                .peopleFinishedTravels(statisticsService.getPeopleFinishedTravels())
                 .build();
     }
 
     private void generateRandomElevatorCall(RandomGenerator random) {
         int calledFromFloor = random.nextInt(100) + 1;
 
-        int numPassengers = 0;
+        int numPassengers;
         if (calledFromFloor == 1) {
             numPassengers = random.nextInt(5) + 1;
         } else {
@@ -80,12 +85,16 @@ public class SimulationService {
         return Math.min(5, Math.max(1, (int) Math.round(passengers)));
     }
 
-    private void sleep(int milliseconds) {
+    private void sleep() {
         try {
-            Thread.sleep(milliseconds);
+            Thread.sleep(5000);
         } catch (InterruptedException e) {
             log.error("Thread sleep interrupted", e);
             Thread.currentThread().interrupt();
         }
+    }
+
+    private Long convertToSeconds(Long milliseconds) {
+        return TimeUnit.MILLISECONDS.toSeconds(milliseconds);
     }
 }

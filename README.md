@@ -79,6 +79,8 @@ At Runtime one would be able to switch between different ElevatorServices by sen
  - FCFSElevatorService: First Come First Served Elevator Service
  - ScanElevatorService: Scan Elevator Service
  - CScanElevatorService: Circular Scan Elevator Service
+ - CLookElevatorService: Circular Look Elevator Service
+ - SstfElevatorService: Shortest Seek Time First Elevator Service
  - TuViejaElevatorService: **Obligatory** - Tu Vieja Elevator Service
 
 ### ElevatorManager and ElevatorContextController

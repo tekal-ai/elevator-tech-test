@@ -75,6 +75,12 @@ Each time an ElevatorService is implemented, the ElevatorServiceManager will add
 ElevatorServices.
 At Runtime one would be able to switch between different ElevatorServices by sending a POST message through the ElevatorController.
 
+#### Implemented Services:
+ - FCFSElevatorService: First Come First Served Elevator Service
+ - ScanElevatorService: Scan Elevator Service
+ - CScanElevatorService: Circular Scan Elevator Service
+ - TuViejaElevatorService: **Obligatory** - Tu Vieja Elevator Service
+
 ### ElevatorManager and ElevatorContextController
 In order to grant scalability and encapsulation, the ElevatorManager is designed as a Singleton which carries the 
 instance of ElevatorService active at the moment. This ElevatorService can be changed during Runtime via the EventContextController

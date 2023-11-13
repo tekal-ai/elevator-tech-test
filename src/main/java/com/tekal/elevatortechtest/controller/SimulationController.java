@@ -3,6 +3,7 @@ package com.tekal.elevatortechtest.controller;
 import com.tekal.elevatortechtest.controller.Response.SimulationResult;
 import com.tekal.elevatortechtest.model.request.SimulationRequest;
 import com.tekal.elevatortechtest.service.SimulationService;
+import lombok.extern.slf4j.Slf4j;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
@@ -16,6 +17,7 @@ import java.util.concurrent.CompletableFuture;
 
 @RestController
 @RequestMapping("/v1/simulation")
+@Slf4j
 public class SimulationController {
 
     private final SimulationService simulationService;
@@ -27,6 +29,7 @@ public class SimulationController {
 
     @PostMapping("/run")
     public DeferredResult<ResponseEntity<SimulationResult>> runSimulation(@RequestBody SimulationRequest simulationRequest) {
+        log.info("Received simulation request with parameters: {Seed: " + simulationRequest.simulationSeed() + ", Duration: " + simulationRequest.durationInSeconds() + "}");
         DeferredResult<ResponseEntity<SimulationResult>> deferredResult = new DeferredResult<>();
 
         CompletableFuture.supplyAsync(() -> simulationService.runSimulation(simulationRequest))

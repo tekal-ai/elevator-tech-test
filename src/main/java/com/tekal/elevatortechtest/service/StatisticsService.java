@@ -13,9 +13,12 @@ import java.util.UUID;
 @Service
 @Slf4j
 public class StatisticsService {
-
     private final Map<UUID, MutablePair<Long, Long>> waitingTimes = new HashMap<>();
     private final Map<UUID, MutablePair<Long, Long>> travelTimes = new HashMap<>();
+
+    public UUID generateSimulationId() {
+        return UUID.randomUUID();
+    }
 
     public void recordWaitingTime(UUID personId, Long waitingTime) {
         waitingTimes.put(personId, MutablePair.of(waitingTime, 0L));

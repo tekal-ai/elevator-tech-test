@@ -41,6 +41,9 @@ public class SimulationService {
         Long simulationFinishedTime = System.currentTimeMillis();
 
         return SimulationResult.builder()
+                .simulationId(statisticsService.generateSimulationId().toString())
+                .seed(simulationRequest.simulationSeed())
+                .durationInSeconds(simulationRequest.durationInSeconds())
                 .averageWaitingTime(convertToSeconds(statisticsService.getAverageWaitingTime(simulationFinishedTime).longValue()))
                 .averageTravelTime(convertToSeconds(statisticsService.getAverageTravelTime(simulationFinishedTime).longValue()))
                 .maxWaitingTime(convertToSeconds(statisticsService.getMaximumWaitingTime(simulationFinishedTime)))

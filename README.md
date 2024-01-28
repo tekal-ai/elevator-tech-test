@@ -37,8 +37,8 @@ After the simulator runs, it should produce summary statistics that describe:
 1. You should fork this repository and invite the following collaborators:
 - @cfosco
 - @GonzaloGregorio
-- @diegomedinacastillo
 - @andrescanabarro
+- @gtulipani
 
 2. Commit your solution to your fork, and send us an email when you're done.
 3. Your fork should contain a markdown document (you can overwrite this README) with an explanation of your solution. Explain any technical decisions, considerations and additional constraints you took into account.
